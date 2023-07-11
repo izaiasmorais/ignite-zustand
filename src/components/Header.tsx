@@ -1,11 +1,11 @@
-import { useAppSelector } from "../store";
-import { userCurrentLesson } from "../store/slicers/player";
+import { useStore, userCurrentLesson } from "../zustand-store";
 
 export function Header() {
-	const { currentLesson, currentModule } = userCurrentLesson();
-	const isCourseLoading = useAppSelector((state) => state.player.isLoading);
+	const isLoading = useStore((state) => state.isLoading);
 
-	if (isCourseLoading) {
+	const { currentLesson, currentModule } = userCurrentLesson();
+
+	if (isLoading) {
 		return <h1 className="text-2xl font-bold">Carregando...</h1>;
 	}
 

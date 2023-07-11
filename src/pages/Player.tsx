@@ -2,18 +2,17 @@ import { MessageCircle } from "lucide-react";
 import { Module } from "../components/Module";
 import { Header } from "../components/Header";
 import { Video } from "../components/Video";
-import { loadCourse } from "../store/slicers/player";
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../store";
+import { useStore } from "../zustand-store";
 
 export function Player() {
-	const modules = useAppSelector((state) => state.player.course?.modules);
-
-	const dispatch = useAppDispatch();
+	const { course, load } = useStore();
 
 	useEffect(() => {
-		dispatch(loadCourse());
+		load();
 	}, []);
+
+	console.log(course);
 
 	return (
 		<div className="h-screen bg-zinc-950 text-zinc-50 flex justify-center items-center">
@@ -34,6 +33,7 @@ export function Player() {
 				shadow pr-80"
 				>
 					<div className="flex-1">
+						{" "}
 						<Video />
 					</div>
 
@@ -42,8 +42,8 @@ export function Player() {
 					border-zinc-800 bg-zinc-900 scrollbar-thin scrollbar-track-zinc-950
 					scrollbar-thumb-violet-500 divide-y-2 divide-zinc-900"
 					>
-						{modules &&
-							modules.map((module, index) => {
+						{course &&
+							course.modules.map((module, index) => {
 								return (
 									<Module
 										key={module.id}

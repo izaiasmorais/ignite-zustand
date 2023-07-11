@@ -1,4 +1,3 @@
-/*
 
 import { describe, it, expect } from "vitest";
 
@@ -81,5 +80,3 @@ describe("player slice", () => {
 		expect(state.currentLessonIndex).toEqual(1);
 	});
 });
-
-*/
