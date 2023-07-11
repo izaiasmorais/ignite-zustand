@@ -1,7 +1,7 @@
-import { ChevronDown } from "lucide-react";
 import * as Collapsible from "@radix-ui/react-collapsible";
+import { ChevronDown } from "lucide-react";
 import { Lesson } from "./Lesson";
-import { useStore } from "../zustand-store";
+import { useStore } from "../store";
 
 interface ModuleProps {
 	title: string;
@@ -51,7 +51,8 @@ export function Module({ title, lessonsAmount, moduleIndex }: ModuleProps) {
 									title={lesson.title}
 									duration={lesson.duration}
 									isCurrent={isCurrent}
-									onPlay={() => play([1, 1])}
+									// @ts-ignore
+									onPlay={() => play([moduleIndex, lessonIndex])}
 								/>
 							);
 						})}

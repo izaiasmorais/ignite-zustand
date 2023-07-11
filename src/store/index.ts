@@ -1,19 +1,85 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { create } from "zustand";
+import { api } from "../lib/axios";
 
-import { useSelector, useDispatch, TypedUseSelectorHook } from "react-redux";
+interface Course {
+	id: number;
+	modules: Array<{
+		id: number;
+		title: string;
+		lessons: Array<{
+			id: string;
+			title: string;
+			duration: string;
+		}>;
+	}>;
+}
 
-import { player } from "./slicers/player";
+interface PlayerState {
+	course: Course | null;
+	currentModuleIndex: number;
+	currentLessonIndex: number;
+	isLoading: boolean;
+	play: (moduleAndLessonIndex: [number, number]) => void;
+	next: () => void;
+	load: () => Promise<void>;
+}
 
-export const store = configureStore({
-	reducer: {
-		player,
-	},
+export const useStore = create<PlayerState>((set, get) => {
+	return {
+		course: null,
+		currentModuleIndex: 0,
+		currentLessonIndex: 0,
+		isLoading: true,
+
+		load: async () => {
+			set({ isLoading: true });
+
+			const response = await api.get("/courses");
+
+			set({ course: response.data, isLoading: false });
+		},
+
+		play: (moduleAndLessonIndex: [number, number]) => {
+			const [moduleIndex, lessonIndex] = moduleAndLessonIndex;
+
+			set({
+				currentModuleIndex: moduleIndex,
+				currentLessonIndex: lessonIndex,
+			});
+		},
+
+		next: () => {
+			const { course, currentLessonIndex, currentModuleIndex } = get();
+
+			const nextLessonIndex = currentLessonIndex + 1;
+			const nextLesson =
+				course?.modules[currentModuleIndex].lessons[nextLessonIndex];
+
+			if (nextLesson) {
+				set({ currentLessonIndex: nextLessonIndex });
+			} else {
+				const nextModuleIndex = currentModuleIndex + 1;
+				const nextModule = course?.modules[nextModuleIndex];
+
+				if (nextModule) {
+					set({
+						currentModuleIndex: nextLessonIndex,
+						currentLessonIndex: 0,
+					});
+				}
+			}
+		},
+	};
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export const useCurrentLesson = () => {
+	return useStore((state) => {
+		const { currentLessonIndex, currentModuleIndex } = state;
 
-export type AppDispatch = typeof store.dispatch;
+		const currentModule = state.course?.modules[currentModuleIndex];
 
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+		const currentLesson = currentModule?.lessons[currentLessonIndex];
 
-export const useAppDispatch: () => AppDispatch = useDispatch;
+		return { currentLesson, currentModule };
+	});
+};

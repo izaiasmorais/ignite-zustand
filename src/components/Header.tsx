@@ -1,9 +1,9 @@
-import { useStore, userCurrentLesson } from "../zustand-store";
+import { useStore, useCurrentLesson } from "../store";
 
 export function Header() {
 	const isLoading = useStore((state) => state.isLoading);
 
-	const { currentLesson, currentModule } = userCurrentLesson();
+	const { currentLesson, currentModule } = useCurrentLesson();
 
 	if (isLoading) {
 		return <h1 className="text-2xl font-bold">Carregando...</h1>;
