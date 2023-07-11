@@ -4,8 +4,12 @@ import { useCurrentLesson, useStore } from "../store";
 
 export function Video() {
 	const { currentLesson } = useCurrentLesson();
-	const isLoading = useStore((state) => state.isLoading);
-	const next = useStore((state) => state.next);
+	const { isLoading, next } = useStore((state) => {
+		return {
+			isLoading: state.isLoading,
+			next: state.next,
+		};
+	});
 
 	function handlePlayNext() {
 		next();

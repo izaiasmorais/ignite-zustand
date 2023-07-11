@@ -10,14 +10,14 @@ interface ModuleProps {
 }
 
 export function Module({ title, lessonsAmount, moduleIndex }: ModuleProps) {
-	const { play, currentLessonIndex, currentModuleIndex, lessons } = useStore(
+	const { currentLessonIndex, currentModuleIndex, lessons, play } = useStore(
 		(state) => {
-			const currentLessonIndex = state.currentLessonIndex;
-			const currentModuleIndex = state.currentModuleIndex;
-			const play = state.play;
-			const lessons = state.course?.modules[currentModuleIndex].lessons;
-
-			return { currentLessonIndex, currentModuleIndex, lessons, play };
+			return {
+				currentLessonIndex: state.currentLessonIndex,
+				currentModuleIndex: state.currentModuleIndex,
+				lessons: state.course?.modules[moduleIndex].lessons,
+				play: state.play,
+			};
 		}
 	);
 

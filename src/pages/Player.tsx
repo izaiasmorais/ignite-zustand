@@ -6,8 +6,12 @@ import { useEffect } from "react";
 import { useCurrentLesson, useStore } from "../store";
 
 export function Player() {
-	const course = useStore((state) => state.course);
-	const load = useStore((state) => state.load);
+	const { course, load } = useStore((state) => {
+		return {
+			course: state.course,
+			load: state.load,
+		};
+	});
 	const { currentLesson } = useCurrentLesson();
 
 	useEffect(() => {
